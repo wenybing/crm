@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wyb.crm.service.UserService">
+    <select id="getUserByUsernameAndPassword" parameterType="map" resultType="User">
+        select u.id, u.ENABLED,u.name,u.password,r.name AS "role.name",r.enabled from users u left outer join roles r on u.role_id = r.id
+        where u.name = #{NAME } and PASSWORD = #{PASSWORD}
+    </select>
+
+    <select id="getUserList" resultType="com.wyb.crm.entity.User">
+        select u.id,u.name,u.enabled,u.role_id from users u
+    </select>
+</mapper>

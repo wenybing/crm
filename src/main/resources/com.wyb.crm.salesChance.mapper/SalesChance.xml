@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wyb.crm.service.SalesChanceService">
+    <select id="getSalesChanceList"  resultType="SalesChance">
+        select ID,CONTACT,CONTACT_TEL,CREATE_DATE,CUST_NAME,DESCRIPTION,DESIGNEE_DATE,RATE,SOURCE,STATUS,TITLE,CREATED_USER_ID,DESIGNEE_ID
+        from SALES_CHANCES t where STATUS = '1'
+    </select>
+
+    <insert id="insertSalesChance" parameterType="map" >
+        INSERT INTO SALES_CHANCES
+        (id,CONTACT,CONTACT_TEL,CREATE_DATE,CUST_NAME,DESCRIPTION,SOURCE,STATUS,TITLE,CREATED_USER_ID,RATE)VALUES
+        (crm_seq.nextval,#{CONTACT},#{CONTACT_TEL},to_date(#{CREATE_DATE},'yyyy-MM-dd'),#{CUST_NAME},#{DESCRIPTION},#{SOURCE},#{STATUS},#{TITLE},#{CREATED_USER_ID},#{RATE})
+    </insert>
+
+    <delete id="deleteSalesChance" parameterType="map">
+        DELETE from SALES_CHANCES WHERE ID=#{ID}
+    </delete>
+
+    <update id="updateSalesChance" parameterType="map">
+        UPDATE SALES_CHANCES
+        SET
+        CONTACT=#{CONTACT},CONTACT_TEL=#{CONTACT_TEL},CUST_NAME=#{CUST_NAME},
+        DESCRIPTION=#{DESCRIPTION},SOURCE=#{SOURCE},TITLE=#{TITLE},RATE=#{RATE}
+         WHERE ID=#{ID}
+    </update>
+
+    <update id="designeeSalesChance" parameterType="map">
+        UPDATE SALES_CHANCES
+        SET
+        DESIGNEE_DATE=to_date(#{DESIGNEEDATE},'yyyy-MM-dd'),DESIGNEE_ID=#{DESIGNEEID},STATUS=#{STATUS}
+        WHERE ID = #{ID}
+    </update>
+
+    <!--<select id="getSalesChanceById" parameterType="map" resultType="SalesChance">-->
+        <!--select id,CONTACT,CONTACT_TEL,CREATE_DATE,CUST_NAME,DESCRIPTION,SOURCE,STATUS,TITLE,CREATED_USER_ID,RATE FROM SALES_CHANCES WHERE ID=#{ID}-->
+    <!--</select>-->
+
+    <!--<select id="getSalesChanceById" parameterType="map" resultType="SalesChance">-->
+        <!--select s.id,s.contact,s.cust_name,s.contact_tel,s.create_date,s.description,s.rate,s.source,s.status,s.title,s.created_user_Id, u.id,u.name-->
+        <!--from sales_chances s left outer join users u on  s.created_user_id = u.id-->
+        <!--where s.id = #{ID}-->
+    <!--</select>-->
+    <resultMap id="SalesChanceMap" type="SalesChance">
+        <id column="id" property="id"></id>
+        <result column="contact" property="contact"></result>
+        <result column="cust_name" property="custName"></result>
+        <result column="contact_tel" property="contactTel"></result>
+        <result column="create_date" property="createDate"></result>
+        <result column="description" property="description"></result>
+        <result column="rate" property="rate"></result>
+        <result column="status" property="status"></result>
+        <result column="title" property="title"></result>
+        <result column="source" property="source"></result>
+        <association property="createBy" javaType="User">
+            <id column="id" property="id"></id>
+            <result column="name" property="name"></result>
+        </association>
+    </resultMap>
+    <select id="getSalesChanceById" parameterType="map" resultMap="SalesChanceMap">
+        select s.id,s.contact,s.cust_name,s.contact_tel,s.create_date,s.description,s.rate,s.source,s.status,s.title,s.created_user_Id, u.id,u.name
+        from sales_chances s,users u where  s.created_user_id = u.id
+        and s.id = #{ID}
+    </select>
+
+    <select id="getSalesChancePlan" resultType="SalesChance">
+        select * from sales_chances where status != '2'
+    </select>
+</mapper>
